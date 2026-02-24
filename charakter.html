@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Charakterbogen</title>
+</head>
+<body>
+
+<h1>Charakterbogen</h1>
+
+<form id="charForm">
+  Name: <input type="text" id="name"><br>
+  Stärke: <input type="number" id="stärke"><br>
+  Geschick: <input type="number" id="geschick"><br>
+  <button type="submit">Speichern</button>
+</form>
+
+<p id="msg"></p>
+
+<script>
+document.getElementById("charForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    let name = document.getElementById("name").value;
+    let stärke = document.getElementById("stärke").value;
+    let geschick = document.getElementById("geschick").value;
+
+    try {
+        let res = await fetch("http://127.0.0.1:8000/character", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({name, stärke, geschick})
+        });
+        let data = await res.json();
+        document.getElementById("msg").innerText = data.msg;
+    } catch(err) {
+        alert("Fehler: " + err);
+    }
+});
+</script>
+
+</body>
+</html>
