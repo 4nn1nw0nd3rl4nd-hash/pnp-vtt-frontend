@@ -1,24 +1,17 @@
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-<title>Mein PNP Tool</title>
+  <meta charset="UTF-8">
+  <title>PNP Tool - Startseite</title>
 </head>
 <body>
+  <h1>Willkommen zum PNP Tool</h1>
 
-<h1>Mein PNP Würfel</h1>
-<button onclick="roll()">Server-Würfeln (d20)</button>
-<p id="out"></p>
+  <nav>
+    <a href="würfeln.html">Würfeln</a> |
+    <a href="charakter.html">Charakterbogen</a>
+  </nav>
 
-<script>
-async function roll() {
-    try {
-        let res = await fetch("http://127.0.0.1:8000/roll");
-        let data = await res.json();
-        document.getElementById("out").innerText = "Wurf: " + data.roll;
-    } catch(err) {
-        alert("Fehler beim Server: " + err);
-    }
-}
-</script>
-
+  <p>Wähle oben, ob du würfeln oder deinen Charakterbogen bearbeiten willst.</p>
 </body>
 </html>

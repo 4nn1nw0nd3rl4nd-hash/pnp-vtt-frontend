@@ -1,41 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-<title>Charakterbogen</title>
+  <meta charset="UTF-8">
+  <title>PNP Tool - Charakterbogen</title>
 </head>
 <body>
+  <h1>Charakterbogen</h1>
 
-<h1>Charakterbogen</h1>
+  <nav>
+    <a href="index.html">Startseite</a> |
+    <a href="würfeln.html">Würfeln</a>
+  </nav>
 
-<form id="charForm">
-  Name: <input type="text" id="name"><br>
-  Stärke: <input type="number" id="stärke"><br>
-  Geschick: <input type="number" id="geschick"><br>
-  <button type="submit">Speichern</button>
-</form>
+  <form id="charForm">
+    Name: <input type="text" id="name"><br>
+    Stärke: <input type="number" id="stärke"><br>
+    Geschick: <input type="number" id="geschick"><br>
+    <button type="submit">Speichern</button>
+  </form>
 
-<p id="msg"></p>
+  <p id="msg"></p>
 
-<script>
-document.getElementById("charForm").addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    let name = document.getElementById("name").value;
-    let stärke = document.getElementById("stärke").value;
-    let geschick = document.getElementById("geschick").value;
+  <h3>Gespeicherte Charaktere</h3>
+  <div id="charList"></div>
+  <button onclick="loadCharacters()">Charaktere laden</button>
 
-    try {
-        let res = await fetch("http://127.0.0.1:8000/character", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({name, stärke, geschick})
+  <script>
+    // Charakter speichern
+    document.getElementById("charForm").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      let name = document.getElementById("name").value;
+      let stärke = document.getElementById("stärke").value;
+      let geschick = document.getElementById("geschick").value;
+
+      try {
+        let res = await fetch("https://pnp-vtt-backend.onrender.com/character", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({name, stärke, geschick})
         });
         let data = await res.json();
         document.getElementById("msg").innerText = data.msg;
-    } catch(err) {
-        alert("Fehler: " + err);
-    }
-});
-</script>
+        document.getElementById("charForm").reset();
+      } catch(err) {
+        alert("Fehler beim Server: " + err);
+      }
+    });
 
+    // Gespeicherte Charaktere laden
+    async function loadCharacters() {
+      try {
+        let res = await fetch("https://pnp-vtt-backend.onrender.com/characters");
+        let data = await res.json();
+        let list = data.characters.map(c => `${c.name} (Stärke: ${c.stärke}, Geschick: ${c.geschick})`).join("<br>");
+        document.getElementById("charList").innerHTML = list;
+      } catch(err) {
+        alert("Fehler beim Laden der Charaktere: " + err);
+      }
+    }
+  </script>
 </body>
 </html>
